@@ -34,5 +34,6 @@ function createMainMenuGUI()
     end, false)
 end
 
+
 -- Call createMainMenuGUI when the resource starts
 addEventHandler("onClientResourceStart", resourceRoot, createMainMenuGUI)
