@@ -1,5 +1,6 @@
 <meta>
-	<info author="VSCode MTA:SA Lua" type="script" name="main_menu" />
-	<script src="c_main_menu.lua" type="client" cache="false" />
-	<script src="s_main_menu.lua" type="server" />
+  <info author="VSCode MTA:SA Lua" type="script" name="main_menu"/>
+  <script src="c_main_menu.lua" type="client" cache="false"/>
+  <script src="s_main_menu.lua" type="server"/>
+  <script src="c_menu.lua" type="client"/>
 </meta>
