@@ -1,10 +1,18 @@
-function showVehicleName ()
-    local theVehicle = getPedOccupiedVehicle ( thePlayer )
-    if  theVehicle then
-       outputChatBox ( "Name of the Vehicle: " .. getVehicleName ( theVehicle ), thePlayer )
+function showVehicleName(theVehicle)
+    local thePlayer = getVehicleOccupant(theVehicle)
+    if thePlayer then
+        outputChatBox("Name of the Vehicle: " .. getVehicleName(theVehicle), thePlayer)
     else
-       outputChatBox ( "You do not have a Vehicle!", thePlayer, 255, 0, 0, true )
-        triggerClientEvent
+        outputChatBox("The vehicle is empty!", 255, 0, 0, true)
+        -- Trigger the client event to show the warning message
+        triggerClientEvent(root, "showWarningMsg", resourceRoot)
     end
- end
- addCommandHandler ( "getcarname", showVehicleName )
+end
+
+addEventHandler("onVehicleExit", root, showVehicleName)
+
+function hideWarningMsg(thePlayer)
+    triggerClientEvent(thePlayer, "hideWarningMsg", resourceRoot)
+end
+
+addEventHandler("onVehicleEnter", root, hideWarningMsg)
