@@ -107,16 +107,16 @@ outputChatBox("You clicked the 'ok' button.", 0, 255, 0)
 if job_win then 
     destroyElement(mainWindow)
     destroyElement(job_win)
-    fadeCamera ( false,0.5, 0, 0, 0 )
+    fadeCamera ( false,0.5, 255, 255, 255 )
+    setTimer(delay_spawn, 1000, 1)
     setTimer(myDelayedFunction, 3000, 1)
-    
+    showCursor(false)
+
 end
-triggerServerEvent("OnbtnClick", resourceRoot)
 end
 function myDelayedFunction()
-    -- Code to execute after the delay
     destroyElement(veh)
-    fadeCamera ( true,0.5 )
+    fadeCamera ( true,0.2 )
 end
 
 function set_scene()
@@ -128,3 +128,9 @@ function set_scene()
     setCameraMatrix(x , y ,z, 1468.388671875, -918.42474365234, 99.881813049316)
     veh =createVehicle(403, x+8, -356, 15,0,0,75)
 end
+function delay_spawn()
+    triggerServerEvent("onServerSendMessage", localPlayer) -- refer to the note on wiki page (under theElement), for understanding which element you should use as 2nd argument
+end
+
+
+
