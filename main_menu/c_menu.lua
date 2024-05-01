@@ -130,7 +130,7 @@ function set_scene()
     veh =createVehicle(403, x+8, -356, 15,0,0,75)
 end
 function delay_spawn()
-    triggerServerEvent("onServerSendMessage", localPlayer) -- refer to the note on wiki page (under theElement), for understanding which element you should use as 2nd argument
+    triggerServerEvent("onServerSendMessage", localPlayer)
 end
 
 
