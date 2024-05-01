@@ -3,16 +3,26 @@ function showVehicleName(theVehicle)
     if thePlayer then
         outputChatBox("Name of the Vehicle: " .. getVehicleName(theVehicle), thePlayer)
     else
-        outputChatBox("The vehicle is empty!", 255, 0, 0, true)
         -- Trigger the client event to show the warning message
         triggerClientEvent(root, "showWarningMsg", resourceRoot)
     end
 end
 
-addEventHandler("onVehicleExit", root, showVehicleName)
-
-function hideWarningMsg(thePlayer)
-    triggerClientEvent(thePlayer, "hideWarningMsg", resourceRoot)
+function handleVehicleExit(thePlayer, seat, jacked)
+    if not jacked then -- Check if the player exited voluntarily
+        local theVehicle = source
+        showVehicleName(theVehicle)
+    end
 end
 
-addEventHandler("onVehicleEnter", root, hideWarningMsg)
+addEventHandler("onVehicleExit", root, handleVehicleExit)
+
+function handleVehicleEnter(thePlayer, seat, jacked)
+    if seat == 0 then -- Only trigger if the player is the driver
+        local theVehicle = source
+        triggerClientEvent(thePlayer, "hideWarningMsg", resourceRoot)
+    end
+end
+
+addEventHandler("onVehicleEnter", root, handleVehicleEnter)
+
