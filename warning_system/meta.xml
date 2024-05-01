@@ -1,0 +1,5 @@
+<meta>
+	<info author="VSCode MTA:SA Lua" type="script" name="warning_system" />
+	<script src="c_warning_system.lua" type="client" cache="false" />
+	<script src="s_warning_system.lua" type="server" />
+</meta>

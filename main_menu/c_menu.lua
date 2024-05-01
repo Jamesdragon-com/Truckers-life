@@ -99,7 +99,7 @@ end, false )
 end
 
 -- Call createMainMenuGUI when the resource starts
-addEventHandler("onClientResourceStart", root, createMainMenuGUI)
+addEventHandler("onClientResourceStart", getResourceRootElement(), createMainMenuGUI)
 
 
 function spawnPlayer() 
