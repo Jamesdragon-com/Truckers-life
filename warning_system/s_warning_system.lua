@@ -16,7 +16,6 @@ function handleVehicleExit(thePlayer, seat, jacked)
 end
 
 addEventHandler("onVehicleExit", root, handleVehicleExit)
-
 function handleVehicleEnter(thePlayer, seat, jacked)
     if seat == 0 then -- Only trigger if the player is the driver
         local theVehicle = source

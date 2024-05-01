@@ -12,6 +12,7 @@ local grid_height=0.6
 local job_win
 local mainWindow 
 local veh
+
 local cargoInfo = {
     {type = "Electronics", destination = "Los Santos", price = 100, deliveryTime = "1 hour"},
     {type = "Clothing", destination = "San Fierro", price = 80, deliveryTime = "45 minutes"},
