@@ -1,7 +1,7 @@
 local marker -- Define marker globally
 
 function onServerSendMessage()
-    local py = spawnPlayer (source, -79.19237, -1126.71826, 1.07812, 90, 8, 0, 0, spawnTeam) -- spawns player with random skin
+    local py = spawnPlayer (source, 2765.07764, -2474.98657, 13.47656, 90, 8, 0, 0, spawnTeam) -- spawns player with random skin
     local x,y,z = getElementPosition(source)
     spawn_veh(x,y+3,z)
     setCameraTarget (source, source)
@@ -19,15 +19,12 @@ function spawn_veh(x,y,z)
     warpPedIntoVehicle(source, my_veh, 0) 
 end
 
-function marker_hit(hitElement, matchingDimension)
-    if hitElement and getElementType(hitElement) == "vehicle" and matchingDimension then
-        local thePlayer = getVehicleOccupant(hitElement)
-        if thePlayer then
-            outputChatBox("Name of the Vehicle: " .. getVehicleName(hitElement), thePlayer)
-        else
-            -- Trigger the client event to show the warning message
-            triggerClientEvent(root, "showWarningMsg", resourceRoot)
-        end
-    end
-end
-addEventHandler("onMarkerHit", marker, marker_hit)
+addEvent("onPlayerAcceptCargo", true)
+addEventHandler("onPlayerAcceptCargo", root, function(cargoType, cargoDestination, cargoPrice, cargoDeliveryTime)
+    -- Here you can implement the logic to handle cargo acceptance
+    -- For example, you can update the player's state, deduct money, start delivery timer, etc.
+    -- You can use MySQL queries or save the state in player's data
+
+    -- Output the cargo acceptance message
+    outputChatBox("Cargo Accepted: " .. cargoType .. " to " .. cargoDestination .. " for $" .. cargoPrice , source, 0, 255, 0)
+end)

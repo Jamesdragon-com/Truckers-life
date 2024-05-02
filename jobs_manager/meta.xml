@@ -1,5 +1,6 @@
 <meta>
 	<info author="VSCode MTA:SA Lua" type="script" name="jobs_manager" />
-	<script src="c_jobs_manager.lua" type="client" cache="false" />
+	<script src="cargos.lua" type="client" cache="false" />
 	<script src="s_jobs_manager.lua" type="server" />
+	<export function="getCargosList" type="server"/>
 </meta>

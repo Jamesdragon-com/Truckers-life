@@ -1,5 +1,5 @@
 <meta>
 	<info author="Meftah" type="script" name="Gui" />
-	<script src="c_Gui.lua" type="client" cache="false" />
+	<script src="main_menu_gui.lua" type="client" cache="false" />
 	<script src="s_Gui.lua" type="server" />
 </meta>
