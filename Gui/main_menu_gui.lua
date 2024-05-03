@@ -24,6 +24,12 @@ local mainWindow
 local gridlist
 local veh
 
+local cargos = exports.cargos:getCargosList()
+
+
+
+
+
 
 
 
@@ -34,6 +40,7 @@ showCursor(true)
 function createMainMenuGUI()
     --- hide the default hud ---
     setPlayerHudComponentVisible ( "all",false )
+  
     --- main menu window ---
     create_menu("ETS")
     --- Create buttons for menu options ---
@@ -143,8 +150,7 @@ guiGridListAddColumn(gridlist, "Price", 0.2)
 guiGridListAddColumn(gridlist, "Delivery Time", 0.2)
 
 -- This section is responsible for receiving the cargos list from the server and populating the grid list
-addEvent("onServerSendCargosList", true)
-addEventHandler("onServerSendCargosList", resourceRoot, function(receivedCargoslist)
+
     -- receivedCargoslist is the cargos list received from the server
     -- Populate the grid list with the received data
     for _, cargo in ipairs(receivedCargoslist) do
@@ -154,10 +160,8 @@ addEventHandler("onServerSendCargosList", resourceRoot, function(receivedCargosl
         guiGridListSetItemText(gridlist, row, 3, tostring(cargo.price), false, false)
         guiGridListSetItemText(gridlist, row, 4, cargo.deliveryTime, false, false)
     end
-end)
-
 -- Request the cargos list from the server when the client script starts or when needed
-triggerServerEvent("onClientRequestCargosList", resourceRoot)
+
 
 
     local buttonWidth, buttonHeight = 100, 30
