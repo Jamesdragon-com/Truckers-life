@@ -15,10 +15,10 @@ local cargoslist = {
     },
 }
 
-function getCargosList()
+function test()
     return cargoslist
 end
 
-exports.getCargosList = getCargosList
+exports.test = test
 
--- Fetch and output the cargo list
+

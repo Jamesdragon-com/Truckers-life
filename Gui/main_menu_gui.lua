@@ -24,20 +24,27 @@ local mainWindow
 local gridlist
 local veh
 
-local cargos = exports.cargos:getCargosList()
+local test = exports.jobsystem:test()
+
+
+function check_export()
+    if test then
+        outputChatBox("Cargos list fetched successfully" ,255, 255, 0)
+        -- Now you can use the cargos list as needed
+    else
+        outputChatBox("Error fetching cargos list",  255, 0, 0)
+    end
+end
 
 
 
 
 
-
-
-
-
-
-
-showCursor(true)
 function createMainMenuGUI()
+    --- check the exported func ---
+    check_export()
+    --- show the cursor ---
+    showCursor(true)
     --- hide the default hud ---
     setPlayerHudComponentVisible ( "all",false )
   
@@ -143,20 +150,15 @@ function create_grid_list()
    -- client.lua
 
 -- Your grid list creation and column addition code
-gridlist = guiCreateGridList(0.05, 0.1, 0.9, grid_height, true, job_win)
-guiGridListAddColumn(gridlist, "Type", 0.25)
-guiGridListAddColumn(gridlist, "Destination", 0.35)
-guiGridListAddColumn(gridlist, "Price", 0.2)
-guiGridListAddColumn(gridlist, "Delivery Time", 0.2)
+make_grid_list()
+
 
 -- This section is responsible for receiving the cargos list from the server and populating the grid list
 
-    -- receivedCargoslist is the cargos list received from the server
-    -- Populate the grid list with the received data
-    for _, cargo in ipairs(receivedCargoslist) do
+    for _, cargo in ipairs(test) do
         local row = guiGridListAddRow(gridlist)
         guiGridListSetItemText(gridlist, row, 1, cargo.type, false, false)
-        guiGridListSetItemText(gridlist, row, 2, cargo.To, false, false)
+        guiGridListSetItemText(gridlist, row, 2, cargo.to, false, false)
         guiGridListSetItemText(gridlist, row, 3, tostring(cargo.price), false, false)
         guiGridListSetItemText(gridlist, row, 4, cargo.deliveryTime, false, false)
     end
@@ -193,4 +195,12 @@ guiGridListAddColumn(gridlist, "Delivery Time", 0.2)
             guiSetText(label, "")
         end
     end, false)
+end
+
+function make_grid_list()
+    gridlist = guiCreateGridList(0.05, 0.1, 0.9, grid_height, true, job_win)
+guiGridListAddColumn(gridlist, "Type", 0.25)
+guiGridListAddColumn(gridlist, "Destination", 0.35)
+guiGridListAddColumn(gridlist, "Price", 0.2)
+guiGridListAddColumn(gridlist, "Delivery Time", 0.2)
 end
