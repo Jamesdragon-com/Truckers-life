@@ -1,0 +1,5 @@
+<meta>
+	<info author="VSCode MTA:SA Lua" type="script" name="Time_weather" />
+	<script src="c_Time_weather.lua" type="client" cache="false" />
+	<script src="s_Time_weather.lua" type="server" />
+</meta>

@@ -11,7 +11,20 @@ local cargoslist = {
         sZ = 13.47656,
         tX = 2748.70557, 
         tY = -2464.47314,
-        tZ = 13.64844,
+        tZ = 12.7,
+    },
+    {
+        type = "Tamr", 
+        from = "Los Santos", 
+        to = "Desert", 
+        price = 100, 
+        deliveryTime = "1 hour",
+        sX = 0,
+        sY = 0,
+        sZ = 0,
+        tX = 2748.70557, 
+        tY = -2464.47314,
+        tZ = 13,
     },
 }
 

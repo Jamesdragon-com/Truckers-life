@@ -22,38 +22,22 @@ local exitButton
 local job_win
 local mainWindow 
 local gridlist
+local selectedCargo = nil
 local veh
 
 local test = exports.jobsystem:test()
 
-
-function check_export()
-    if test then
-        outputChatBox("Cargos list fetched successfully" ,255, 255, 0)
-        -- Now you can use the cargos list as needed
-    else
-        outputChatBox("Error fetching cargos list",  255, 0, 0)
-    end
-end
-
-
-
-
-
 function createMainMenuGUI()
-    --- check the exported func ---
-    check_export()
     --- show the cursor ---
     showCursor(true)
     --- hide the default hud ---
     setPlayerHudComponentVisible ( "all",false )
-  
     --- main menu window ---
     create_menu("ETS")
     --- Create buttons for menu options ---
-    create_buttons("start","options","exit")
     set_scene()
 end
+addEventHandler("onClientResourceStart", getResourceRootElement(), createMainMenuGUI)
 
 function showwin()
     if job_win then
@@ -65,10 +49,7 @@ function showwin()
         create_grid_list()
     end
 end
-
-
 -- Call createMainMenuGUI when the resource starts
-addEventHandler("onClientResourceStart", getResourceRootElement(), createMainMenuGUI)
 
 
 function spawnPlayer() 
@@ -98,83 +79,45 @@ function set_scene()
     veh =createVehicle(403, x+8, -356, 15,0,0,75)
 end
 function delay_spawn()
-    triggerServerEvent("onServerSendMessage", localPlayer)
-end
-
-function cargo_chose(gridlist)
-    if not gridlist then
-        outputChatBox("Gridlist not found.", 255, 0, 0)
-        return
-    end
-
-    local selectedRow = guiGridListGetSelectedItem(gridlist)
-    if selectedRow ~= -1 then
-        local cargoType = guiGridListGetItemText(gridlist, selectedRow, 1)
-        local cargoDestination = guiGridListGetItemText(gridlist, selectedRow, 2)
-        local cargoPrice = tonumber(guiGridListGetItemText(gridlist, selectedRow, 3))
-        local cargoDeliveryTime = guiGridListGetItemText(gridlist, selectedRow, 4)
-
-        -- Trigger an event to the server to handle cargo acceptance
-        triggerServerEvent("onPlayerAcceptCargo", localPlayer, cargoType, cargoDestination, cargoPrice, cargoDeliveryTime)
+    if selectedCargo then
+        local sX = selectedCargo.sX
+        local sY = selectedCargo.sY
+        local sZ = selectedCargo.sZ
+        local tX = selectedCargo.tX
+        local tY = selectedCargo.tY
+        local tZ = selectedCargo.tZ
+        triggerServerEvent("onServerSendMessage", localPlayer, sX, sY, sZ,tX,tY,tZ)
     else
-        outputChatBox("Please select a cargo to accept.", 255, 0, 0)
     end
 end
-
 function create_menu(win_title)
    -- Create the main menu window
    mainWindow = guiCreateWindow(windowX, windowY, windowWidth, windowHeight, win_title, false)
+   create_buttons("start","options","exit")
 end
 
 function create_buttons(j_btn,o_btn,e_btn)
     joinButton = guiCreateButton(buttonX, buttonY, buttonWidth, buttonHeight, j_btn, false, mainWindow)
-    addEventHandler ( "onClientGUIClick", joinButton, function()
-    outputChatBox("You clicked the 'Get a job' button.", 0, 255, 0)
-    showwin()
-end, false )
-
     optionsButton = guiCreateButton(buttonX, buttonY + buttonHeight + buttonPadding, buttonWidth, buttonHeight, o_btn, false, mainWindow)
-    addEventHandler("onClientGUIClick", optionsButton, function()
-        -- Implement logic to open options menu
-        outputChatBox("You clicked the 'Options' button.", 0, 255, 0)
-    end, false)
-    
     exitButton = guiCreateButton(buttonX, buttonY + 2 * (buttonHeight + buttonPadding), buttonWidth, buttonHeight, e_btn, false, mainWindow)
-    addEventHandler("onClientGUIClick", exitButton, function()
-        -- Implement logic to exit the game
-        outputChatBox("You clicked the 'Exit' button.", 0, 255, 0)
-    end, false)
+    addEventHandler("onClientGUIClick", joinButton, joinButtonClicked, false)
+    addEventHandler("onClientGUIClick", optionsButton, optionsButtonClicked, false)
+    addEventHandler("onClientGUIClick", exitButton, exitButtonClicked, false)
+end
+function joinButtonClicked()
+    showwin()
 end
 --function to create the grid list of the cargos
 function create_grid_list()
    -- client.lua
 
 -- Your grid list creation and column addition code
-make_grid_list()
-
-
--- This section is responsible for receiving the cargos list from the server and populating the grid list
-
-    for _, cargo in ipairs(test) do
-        local row = guiGridListAddRow(gridlist)
-        guiGridListSetItemText(gridlist, row, 1, cargo.type, false, false)
-        guiGridListSetItemText(gridlist, row, 2, cargo.to, false, false)
-        guiGridListSetItemText(gridlist, row, 3, tostring(cargo.price), false, false)
-        guiGridListSetItemText(gridlist, row, 4, cargo.deliveryTime, false, false)
-    end
--- Request the cargos list from the server when the client script starts or when needed
-
-
-
+    grid_list()
     local buttonWidth, buttonHeight = 100, 30
     local buttonX, buttonY = (windowWidth - buttonWidth) / 1.05, windowHeight+5
     local okButton = guiCreateButton(buttonX, buttonY, buttonWidth, buttonHeight, "OK", false, job_win)
-    addEventHandler("onClientGUIClick", okButton, function()
-        spawnPlayer()
-        if gridlist then
-        cargo_chose(gridlist)
-        end
-    end, false)
+
+    addEventHandler("onClientGUIClick", okButton, okButtonClicked, false)
     
     local labelWidth, labelHeight = 0.9 * windowWidth, 0.15 * windowHeight
     local labelX, labelY = -(windowWidth - labelWidth) ,  windowHeight - grid_height
@@ -191,16 +134,36 @@ make_grid_list()
             
             local itemInfo = "Type: " .. type .. "\nDestination: " .. destination .. "\nPrice: " .. price .. "\nDelivery Time: " .. deliveryTime
             guiSetText(label, itemInfo)
+            selectedCargo = guiGridListGetItemData(gridlist, selectedRow, 1)
         else
+            selectedCargo = nil
             guiSetText(label, "")
         end
     end, false)
 end
 
-function make_grid_list()
+function grid_list()
     gridlist = guiCreateGridList(0.05, 0.1, 0.9, grid_height, true, job_win)
-guiGridListAddColumn(gridlist, "Type", 0.25)
-guiGridListAddColumn(gridlist, "Destination", 0.35)
-guiGridListAddColumn(gridlist, "Price", 0.2)
-guiGridListAddColumn(gridlist, "Delivery Time", 0.2)
+    guiGridListAddColumn(gridlist, "Type", 0.25)
+    guiGridListAddColumn(gridlist, "Destination", 0.35)
+    guiGridListAddColumn(gridlist, "Price", 0.2)
+    guiGridListAddColumn(gridlist, "Delivery Time", 0.2)
+
+    for _, cargo in ipairs(test) do
+        local row = guiGridListAddRow(gridlist)
+        guiGridListSetItemText(gridlist, row, 1, cargo.type, false, false)
+        guiGridListSetItemText(gridlist, row, 2, cargo.to, false, false)
+        guiGridListSetItemText(gridlist, row, 3, tostring(cargo.price), false, false)
+        guiGridListSetItemText(gridlist, row, 4, cargo.deliveryTime, false, false)
+        guiGridListSetItemData(gridlist, row, 1, cargo)  -- Set cargo data as item data
+    end
+end
+
+
+function okButtonClicked()
+     if not selectedCargo then
+        outputChatBox("Please select a cargo job from the list before proceeding.", 255, 0, 0)
+    else
+        spawnPlayer()
+    end
 end
