@@ -24,7 +24,6 @@ local mainWindow
 local gridlist
 local veh
 
-local getCargosList = exports.cargos:getCargosList()
 
 
 
@@ -134,27 +133,32 @@ end, false )
 end
 --function to create the grid list of the cargos
 function create_grid_list()
-    gridlist = guiCreateGridList(0.05, 0.1, 0.9, grid_height, true, job_win)
-    guiGridListAddColumn(gridlist, "Type", 0.25)
-    guiGridListAddColumn(gridlist, "Destination", 0.35)
-    guiGridListAddColumn(gridlist, "Price", 0.2)
-    guiGridListAddColumn(gridlist, "Delivery Time", 0.2)
-    
-    -- Retrieve cargos list from the exported function
-    
-    -- Fill the grid list with cargos information
-    if getCargosList then
-     for _, cargo in ipairs(getCargosList) do
+   -- client.lua
+
+-- Your grid list creation and column addition code
+gridlist = guiCreateGridList(0.05, 0.1, 0.9, grid_height, true, job_win)
+guiGridListAddColumn(gridlist, "Type", 0.25)
+guiGridListAddColumn(gridlist, "Destination", 0.35)
+guiGridListAddColumn(gridlist, "Price", 0.2)
+guiGridListAddColumn(gridlist, "Delivery Time", 0.2)
+
+-- This section is responsible for receiving the cargos list from the server and populating the grid list
+addEvent("onServerSendCargosList", true)
+addEventHandler("onServerSendCargosList", resourceRoot, function(receivedCargoslist)
+    -- receivedCargoslist is the cargos list received from the server
+    -- Populate the grid list with the received data
+    for _, cargo in ipairs(receivedCargoslist) do
         local row = guiGridListAddRow(gridlist)
         guiGridListSetItemText(gridlist, row, 1, cargo.type, false, false)
-        guiGridListSetItemText(gridlist, row, 2, cargo.from, false, false) -- Adjusted to "To" instead of "destination"
+        guiGridListSetItemText(gridlist, row, 2, cargo.To, false, false)
         guiGridListSetItemText(gridlist, row, 3, tostring(cargo.price), false, false)
         guiGridListSetItemText(gridlist, row, 4, cargo.deliveryTime, false, false)
-       
-      end
-    else 
-      outputChatBox("Error", 255, 255, 255)
     end
+end)
+
+-- Request the cargos list from the server when the client script starts or when needed
+triggerServerEvent("onClientRequestCargosList", resourceRoot)
+
 
     local buttonWidth, buttonHeight = 100, 30
     local buttonX, buttonY = (windowWidth - buttonWidth) / 1.05, windowHeight+5

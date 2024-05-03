@@ -1,3 +1,4 @@
+--cargos.lua
 local cargoslist = {
     {type = "Electronics", 
     from = "Los Santos", 
@@ -20,3 +21,7 @@ function getCargosList()
     return cargoslist
 end
 
+addEvent("onClientRequestCargosList", true)
+addEventHandler("onClientRequestCargosList", resourceRoot, function()
+    triggerClientEvent(client, "onServerSendCargosList", resourceRoot, cargoslist)
+end)
